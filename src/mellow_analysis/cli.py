@@ -66,5 +66,36 @@ def version():
     click.echo(f"Mellow Analysis v{__version__}")
 
 
+@cli.command("generate-report")
+@click.option('--output', '-o', default=None, help='Output path for the PDF report')
+@click.option('--format', default='pdf', type=click.Choice(['pdf']), help='Output format')
+def generate_report(output, format):
+    """Generate the analytics PDF report"""
+    
+    try:
+        from mellow_analysis.reports.generate_report import MellowReportGenerator
+        
+        click.echo("🚀 Starting Mellow Analytics Report Generation...")
+        
+        generator = MellowReportGenerator()
+        
+        if output:
+            from pathlib import Path
+            output_path = Path(output)
+            generator.generate_report(output_path)
+            click.echo(f"📄 Report generated successfully: {output_path}")
+        else:
+            generator.generate_report()
+            click.echo("📄 Report generated successfully: data/reports/mellow_analytics_report.pdf")
+            
+    except ImportError as e:
+        click.echo(f"❌ Import error: {e}", err=True)
+        click.echo("💡 Make sure all dependencies are installed", err=True)
+        sys.exit(1)
+    except Exception as e:
+        click.echo(f"❌ Error generating report: {e}", err=True)
+        sys.exit(1)
+
+
 if __name__ == '__main__':
     cli() 

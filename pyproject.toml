@@ -8,7 +8,6 @@ packages = [{include = "mellow_analysis", from = "src"}]
 
 [tool.poetry.scripts]
 mellow = "mellow_analysis.cli:cli"
-mellow-dashboard = "mellow_analysis.cli:dashboard"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"

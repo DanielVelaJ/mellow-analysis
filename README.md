@@ -15,6 +15,14 @@ poetry run streamlit run src/mellow_analysis/streamlit/dashboard.py
 
 The dashboard will open in your browser at `http://localhost:8501`
 
+### Generating PDF Reports
+```bash
+# Generate comprehensive analytics report
+poetry run python -m src.mellow_analysis.reports.generate_report
+```
+
+This creates `mellow_analytics_report.pdf` with professional visualizations and insights.
+
 ### Prerequisites
 ```bash
 # Install dependencies
