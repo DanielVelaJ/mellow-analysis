@@ -24,11 +24,9 @@ from mellow_analysis.streamlit.visualizations.content_analysis import (
     render_category_performance,
     render_wrong_answers_analysis
 )
-from mellow_analysis.streamlit.visualizations.user_progression import (
-    render_user_progression_analysis,
-    render_user_segments,
-    render_retention_analysis
-)
+from mellow_analysis.streamlit.visualizations.user_progression import render_user_progression_analysis
+from mellow_analysis.streamlit.visualizations.user_segments import render_user_segments
+from mellow_analysis.streamlit.visualizations.user_retention import render_retention_analysis
 from mellow_analysis.streamlit.statistical_tests.two_sample_tests import (
     render_two_sample_tests
 )

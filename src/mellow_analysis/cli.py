@@ -18,7 +18,7 @@ def cli():
 
 
 @cli.command()
-@click.option('--port', default=8501, help='Port to run the dashboard on', type=int)
+@click.option('--port', default=None, help='Port to run the dashboard on (auto-selects if not specified)', type=int)
 @click.option('--host', default='localhost', help='Host to bind the dashboard to')
 @click.option('--browser/--no-browser', default=True, help='Auto-open browser')
 def dashboard(port, host, browser):
@@ -31,23 +31,30 @@ def dashboard(port, host, browser):
         click.echo(f"❌ Dashboard file not found at {dashboard_path}", err=True)
         sys.exit(1)
     
-    # Build streamlit command
+    # Build streamlit command - let Streamlit handle port selection and URL display
     cmd = [
         sys.executable, "-m", "streamlit", "run",
         str(dashboard_path),
-        "--server.port", str(port),
         "--server.address", host,
     ]
+    
+    # Only specify port if user provided one, otherwise let Streamlit auto-select
+    if port:
+        cmd.extend(["--server.port", str(port)])
     
     if not browser:
         cmd.extend(["--server.headless", "true"])
     
     click.echo(f"🚀 Starting Mellow Analytics Dashboard...")
-    click.echo(f"📊 Dashboard will be available at: http://{host}:{port}")
+    if port:
+        click.echo(f"📊 Using specified port: {port}")
+    else:
+        click.echo(f"📊 Auto-selecting available port...")
     click.echo(f"🔗 Press Ctrl+C to stop the server")
+    click.echo("")  # Empty line for better formatting
     
     try:
-        # Launch streamlit
+        # Launch streamlit - this will show native Streamlit URLs and port selection
         subprocess.run(cmd, check=True)
     except KeyboardInterrupt:
         click.echo("\n👋 Dashboard stopped by user")

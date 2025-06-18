@@ -61,23 +61,16 @@ pip install streamlit plotly pandas numpy
 mellow-analysis/
 ├── src/mellow_analysis/              # Main package
 │   ├── data/                         # Data loading and processing
-│   │   ├── __init__.py
-│   │   └── loader.py                 # Centralized data loader with caching
 │   ├── streamlit/                    # Dashboard application
-│   │   ├── __init__.py
 │   │   ├── dashboard.py              # Main dashboard app
 │   │   └── visualizations/           # Individual visualization components
-│   │       ├── __init__.py
-│   │       ├── overview_metrics.py   # KPIs and summary statistics
-│   │       ├── content_analysis.py   # Question difficulty and topic performance
-│   │       └── user_progression.py   # Learning progression and user segments
+│   ├── reports/                      # PDF report generation
 │   └── utils/                        # Utility functions
+├── docs/                             # Documentation
+│   └── dashboard.md                  # Dashboard technical documentation
 ├── data/                             # CSV data files
-│   ├── rc_invokana_cases.csv         # Clinical questions and answers
-│   └── rc_invokana_users_responses_nopersonal_hash.csv  # User responses
 ├── run_dashboard.py                  # Dashboard launcher script
 ├── data_validation.py               # Comprehensive data validation
-├── DASHBOARD_DOCUMENTATION.md       # Detailed visualization documentation
 ├── pyproject.toml                   # Poetry configuration
 └── README.md                        # This file
 ```
@@ -173,7 +166,7 @@ poetry run python data_validation.py
 
 ## 📚 Documentation
 
-- **[Dashboard Documentation](DASHBOARD_DOCUMENTATION.md):** Comprehensive guide to all visualizations
+- **[Dashboard Documentation](docs/dashboard.md):** Comprehensive guide to all visualizations and technical details
 - **Code Documentation:** Detailed docstrings and inline comments
 - **Methodology Notes:** Available in dashboard expandable sections
 
