@@ -1,0 +1,21 @@
+---
+description: Whenever asked to do something neatly or cleanly
+globs: 
+alwaysApply: false
+---
+Please stick to best modern practices. 
+- Use src layout. 
+- Clearly document functions and modules according to best modern practices. 
+- Add extensive comments to make code readable. 
+- Name files, modules, functions, etc. with meaningful names according to best modern practices. 
+- Use poetry for dependency management and installation of packages. 
+- Make sure the README.md is allways up to date. 
+- Always prefer absolute imports over relative imports.
+- Centralize configuration when possible according to best modern practices.
+- Always think of how your changes may impact the repo structure and choose the best repo structure so that the codebase follows best modern practices. 
+- Centralize logging configuration whenever possible and make sure to use logging properly so that logs are informative and say where they come from. 
+- Make sure that the pyproject.toml is up to date and uses the modern syntax. Do not edit it directly to add dependencies, instead do it through poetry commands. 
+
+We want to write mantainable, scalable clean code that always follows best modern practices. 
+- Use modern best naming conventions when necessary. 
+

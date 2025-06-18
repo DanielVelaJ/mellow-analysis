@@ -1,0 +1,57 @@
+I have these two files in the data folder. They gave me this description of them 
+Hola Daniel
+
+Después de nuestra llamada, agradecemos mucho tu tiempo y disposición, te comparto un par de CSVs para que puedas revisarlos y tengas una mejor comprensión de lo que contamos de información para este estudio de mercado mediante casos clínicos.
+
+Recordando que estos casos clínicos son los que nos interesan para hacer este estudio, y los usuarios son los que han contestado estos mismos. Para nuestro producto de Reto Cardiología.
+
+Casos:
+https://drive.google.com/file/d/1hQpZXtRnLREBo_0M58w7MOcovB2Cnk4E/view?usp=drive_link
+Estos casos, que veas que es el mismo contenido de forma duplicada, es normal porque para nuestro producto necesita aparecer el caso clínico en dos exámenes simultáneamente y la estructura de cómo está la aplicación (donde contestan estos exámenes). 
+La composición General es que hay categorías que tienen subcategorías, que a su vez está subcategorías tienen casos clínicos, estos casos clínicos tienen preguntas, estas preguntas tienen 4 respuestas de selección única. La pregunta tiene una retroalimentación que enriquece el caso clínico y la pregunta para indicar al usuario acerca de la respuesta correcta.
+Los campos que rc_invokana_cases.csv tiene, son:
+    id_exam: Identificador del examen
+    exam_name: Nombre del examen
+    id_category: Identificador de la categoría
+    category_name: Nombre de la categoría
+    id_subcategory: Identificador de la subcategoría
+    subcategory_name: Nombre de la subcategoría
+    id_case: Identificador del caso clínico
+    case: Contenido del caso clínico
+    case_feedback: Retroalimentación del caso clínico
+    id_question: Identificador de la pregunta
+    question: Contenido de la pregunta
+    question_feedback: Retroalimentación de la pregunta
+    option1_correct: Opción 1 en texto plano que es la CORRECTA de la pregunta
+    option2_incorrect: Opción 2 en texto plano que es INCORRECTA de la pregunta
+    option3_incorrect: Opción 3 en texto plano que es INCORRECTA de la pregunta
+    option4_incorrect: Opción 4 en texto plano que es INCORRECTA de la pregunta
+
+Usuarios:
+https://drive.google.com/file/d/1puAgsvLAHQlqwBS3bv8NmaSKp4ZCIqF5/view?usp=drive_link
+Cada fila representa una respuesta a una pregunta, que como comento arriba, el caso tiene pregunta y la pregunta respuesta, y esto está agrupado en un examen. Las asociaciones con los casos están dadas por el id_*, en el caso de la respuesta está directamente el valor de la respuesta.
+Los campos que rc_invokana_users_responses_nopersonaldata_hash.csv tiene, son:
+    id_user_hash: Identificador del usuario hasheado
+    user_name: nombre del usaurio
+    user_email: correo electrónico del usuario
+    user_hospital: Hospital donde se desarrollaron sus práctica clínicas
+    user_subspecialty: Subespecialidad deseada del usuario
+    user_education_level: Nivel de educación actual del usuario
+    user_gender: Género del usuario
+    user_age_range: Rango de edad que el usuario entra
+    is_user_working: Si el usuario actualmente trabaja
+    user_created_at: fecha de creación del usuario en UTC
+    exam_created_at: fecha de creación del examen hecho por el usuario
+    id_case: Identificador del caso clínico asociado a la respuesta del usuario
+    id_question: Identificador de la pregunta asociada a la respuesta del usuario
+    user_answer: La respuesta que seleccionó el usuario en texto plano
+    is_user_answer_correct: si es correca o incorrecta la respuesta del usuario
+    country_user_made_the_exam: El país en alpha-2 ISO 3166
+    city_user_made_the_exam: La ciudad donde el usuario respondió la pregunta
+
+Can you please look at them so that you can understand the data and recommend me ways in which I can analyze it? I understand (Correct me if I am wrong) that one is a dataset of cases and the other one of the uswer ansers. I have some questions. 
+1. Does the case dataset contain which is the correct answer? Otherwise how can I know what is the correct answer? 
+2. Does the responses dataset contain a history of all the times each user answered the same question? 
+
+Deeply familiarize yourself with the structure and content of the data so that we can later proceed to analyze it together. 
+If you will install anything please do it through poetry add commands. 

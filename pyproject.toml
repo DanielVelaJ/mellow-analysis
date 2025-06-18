@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "mellow-analysis"
+version = "0.1.0"
+description = "Data analysis for our consulting at Mellow"
+authors = ["Daniel Vela <d.vela1@hotmail.com>"]
+readme = "README.md"
+packages = [{include = "mellow_analysis", from = "src"}]
+
+[tool.poetry.scripts]
+mellow = "mellow_analysis.cli:cli"
+mellow-dashboard = "mellow_analysis.cli:dashboard"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+pandas = "^2.3.0"
+numpy = "^2.3.0"
+matplotlib = "^3.10.3"
+seaborn = "^0.13.2"
+streamlit = "^1.46.0"
+plotly = "^6.1.2"
+click = "^8.1.0"
+scipy = "^1.15.0"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
