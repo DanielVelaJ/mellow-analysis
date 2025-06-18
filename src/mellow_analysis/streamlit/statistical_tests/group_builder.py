@@ -90,8 +90,6 @@ class GroupBuilder:
     
     def render_group_builder(self, group_name: str, key_prefix: str) -> GroupDefinition:
         """Render interactive group builder UI."""
-        st.subheader(f"Define {group_name}")
-        
         group_def = GroupDefinition(name=group_name)
         
         # Categorical variable selection
@@ -148,24 +146,59 @@ class GroupBuilder:
         
         return group_def
     
-    def render_group_preview(self, group_def: GroupDefinition, df: pd.DataFrame) -> None:
-        """Render a preview of the group definition."""
+    def render_group_preview(self, group_def: GroupDefinition, df: pd.DataFrame, 
+                           outcome_var: str = None) -> None:
+        """Render compact group statistics."""
         validation = group_def.validate(df)
-        description = group_def.generate_description(self.variables)
         
-        # Show group description
-        if description:
-            st.info(f"**Group Definition:** {description}")
+        # Always show basic stats if we have users and outcome variable
+        if validation['size'] > 0 and outcome_var:
+            self._render_compact_stats(group_def, df, outcome_var)
+        elif validation['size'] == 0:
+            st.info("👆 Select filters to define this group")
         
-        # Show group size with color coding
-        if validation['is_valid']:
-            st.success(f"✅ Group size: **{validation['size']:,}** users")
-        else:
-            st.error(f"❌ Group size: **{validation['size']:,}** users")
-        
-        # Show warnings
+        # Show warnings compactly
         for warning in validation['warnings']:
-            st.warning(warning)
+            st.caption(f"⚠️ {warning}")
+    
+    def _render_compact_stats(self, group_def: GroupDefinition, df: pd.DataFrame, 
+                            outcome_var: str) -> None:
+        """Render essential group statistics in a natural, conversational format."""
+        try:
+            # Get group data
+            group_data = group_def.apply_filters(df)
+            if outcome_var not in group_data.columns:
+                return
+                
+            outcome_values = group_data[outcome_var].dropna()
+            if len(outcome_values) < 3:
+                st.warning(f"⚠️ Only {len(outcome_values)} values (need ≥3 for analysis)")
+                return
+            
+            # Natural language summary instead of clinical metrics
+            mean_val = outcome_values.mean()
+            std_val = outcome_values.std()
+            count = len(outcome_values)
+            
+            # Create contextual description
+            description = f"**{count:,} users** with average score of **{mean_val:.2f}** (spread: ±{std_val:.2f})"
+            st.markdown(description)
+            
+            # Single normality indicator with natural language
+            from scipy import stats
+            try:
+                _, shapiro_p = stats.shapiro(outcome_values)
+                is_normal = shapiro_p > 0.05
+                
+                if is_normal:
+                    st.caption("✅ Data follows normal distribution (good for t-tests)")
+                else:
+                    st.caption("⚠️ Data is non-normal (will use rank-based test)")
+            except:
+                st.caption("🔍 Cannot assess data distribution")
+            
+        except Exception as e:
+            st.caption(f"Error calculating statistics: {str(e)}")
     
     def validate_groups(self, group_a: GroupDefinition, group_b: GroupDefinition, 
                        df: pd.DataFrame) -> Dict[str, Any]:

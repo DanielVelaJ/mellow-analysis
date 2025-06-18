@@ -182,6 +182,60 @@ class StatisticalTestEngine:
         
         return f"Results show {significance} (p={p_value:.4f}) {practical} (effect size: {effect_magnitude.lower()})."
     
+    def _select_test(self, data_a: pd.Series, data_b: pd.Series) -> str:
+        """Select the appropriate statistical test based on data characteristics."""
+        if len(data_a) < 3 or len(data_b) < 3:
+            return "Insufficient data"
+        
+        try:
+            # Check normality for both groups
+            _, p_a = stats.shapiro(data_a)
+            _, p_b = stats.shapiro(data_b)
+            
+            both_normal = p_a > 0.05 and p_b > 0.05
+            
+            if both_normal:
+                # Check equal variances
+                _, p_levene = stats.levene(data_a, data_b)
+                equal_variances = p_levene > 0.05
+                
+                if equal_variances:
+                    return "Student's t-test"
+                else:
+                    return "Welch's t-test"
+            else:
+                return "Mann-Whitney U test"
+                
+        except Exception:
+            return "Mann-Whitney U test"
+    
+    def _get_test_reason(self, data_a: pd.Series, data_b: pd.Series) -> str:
+        """Get the reason why a particular test was selected."""
+        if len(data_a) < 3 or len(data_b) < 3:
+            return "Not enough data"
+        
+        try:
+            # Check normality for both groups
+            _, p_a = stats.shapiro(data_a)
+            _, p_b = stats.shapiro(data_b)
+            
+            both_normal = p_a > 0.05 and p_b > 0.05
+            
+            if both_normal:
+                # Check equal variances
+                _, p_levene = stats.levene(data_a, data_b)
+                equal_variances = p_levene > 0.05
+                
+                if equal_variances:
+                    return "Both groups normal + equal variances"
+                else:
+                    return "Both groups normal + unequal variances"
+            else:
+                return "Non-normal distribution detected"
+                
+        except Exception:
+            return "Data quality issues detected"
+
     def create_comparison_visualizations(self, group_a: GroupDefinition, group_b: GroupDefinition,
                                        df: pd.DataFrame, outcome_variable: str, 
                                        outcome_display_name: str) -> go.Figure:
