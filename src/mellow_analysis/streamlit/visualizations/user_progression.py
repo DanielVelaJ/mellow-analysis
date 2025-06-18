@@ -11,15 +11,16 @@ import numpy as np
 
 def render_user_progression_analysis(data_loader):
     """
-    Render user learning progression analysis.
+    Render enhanced user learning progression analysis with dual-metric support.
     
     IMPORTANT: This analysis only works for users with multiple attempts.
+    Features both cumulative accuracy and rolling window accuracy for comprehensive learning assessment.
     """
     
-    st.header("📈 User Learning Progression")
+    st.header("📈 Enhanced Learning Progression Analysis")
     
-    # How it's built explanation
-    with st.expander("🔧 How This Chart Is Built & The Mathematics of Learning Progression"):
+    # How it's built explanation - enhanced for dual metrics
+    with st.expander("🔧 How This Chart Is Built & The Mathematics of Dual-Metric Learning Progression"):
         st.markdown("""
         **Critical Data Processing Steps:**
         ```python
@@ -30,91 +31,98 @@ def render_user_progression_analysis(data_loader):
         user_attempt_counts = responses_df.groupby('id_user_hash').size()
         multi_attempt_users = user_attempt_counts[user_attempt_counts >= min_attempts]
         
-        # Step 3: Calculate expanding mean (cumulative accuracy)
+        # Step 3: Calculate BOTH metrics
+        # Cumulative accuracy (expanding mean)
         user_data['cumulative_accuracy'] = user_data['is_correct'].expanding().mean()
+        
+        # Rolling window accuracy (recent performance)
+        user_data['rolling_accuracy'] = user_data['is_correct'].rolling(window_size, min_periods=1).mean()
         ```
         
-        **Understanding Expanding Mean (The Heart of Progression Analysis):**
+        **Understanding Both Metrics - The Complete Learning Picture:**
         """)
         
-        # Create expanding mean explanation table
-        expanding_data = {
-            'Attempt #': ['1', '2', '3', '4', '5'],
-            'Response': ['Correct (1)', 'Wrong (0)', 'Correct (1)', 'Correct (1)', 'Wrong (0)'],
-            'Expanding Mean Calculation': [
-                '1/1 = 1.00',
-                '(1+0)/2 = 0.50', 
-                '(1+0+1)/3 = 0.67',
-                '(1+0+1+1)/4 = 0.75',
-                '(1+0+1+1+0)/5 = 0.60'
+        # Create dual metric comparison table
+        comparison_data = {
+            'Aspect': ['Purpose', 'Time Sensitivity', 'Volatility', 'Best For', 'Weakness'],
+            'Cumulative Accuracy': [
+                'Overall learning trajectory',
+                'Early attempts heavily weighted',
+                'Stable, dampened',
+                'Long-term assessment',
+                'Poor at recent changes'
             ],
-            'Cumulative Accuracy': ['100%', '50%', '67%', '75%', '60%'],
-            'Interpretation': [
-                'Perfect start',
-                'Major drop after mistake',
-                'Recovery and improvement',
-                'Continued learning',
-                'Temporary setback'
+            'Rolling Window Accuracy': [
+                'Current performance level',
+                'Recent attempts only',
+                'More volatile',
+                'Immediate coaching decisions',
+                'Can miss overall progress'
+            ],
+            'When to Use': [
+                'Progress reports, certification',
+                'Intervention decisions, support',
+                'Academic transcripts',
+                'Real-time feedback',
+                'Historical analysis'
             ]
         }
         
-        expanding_df = pd.DataFrame(expanding_data)
-        st.table(expanding_df)
+        comparison_df = pd.DataFrame(comparison_data)
+        st.table(comparison_df)
         
         st.markdown("""
-        **Why This Mathematical Approach Shows True Learning:**
+        **Mathematical Example - Same User, Different Insights:**
         """)
         
-        # Create mathematical justification table
-        math_data = {
-            'Concept': ['Time Ordering', 'Expanding Mean', 'Multiple Attempts', 'Trend Analysis'],
-            'Why Essential': [
-                'Must see responses in chronological order',
-                'Shows cumulative performance over time',
-                'Single attempts cannot show progression',
-                'Direction indicates learning vs. struggling'
-            ],
-            'What It Reveals': [
-                'Learning happens over time, not randomly',
-                'How user knowledge accumulates',
-                'Patterns of improvement or decline',
-                'Effectiveness of teaching methods'
-            ],
-            'Learning Indicators': [
-                'Later responses build on earlier ones',
-                'Upward trend = effective learning',
-                'Consistency across multiple attempts',
-                'Improvement despite occasional mistakes'
+        # Create detailed mathematical example
+        example_data = {
+            'Attempt': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            'Response': ['✓', '✗', '✗', '✓', '✓', '✓', '✓', '✗', '✓', '✓'],
+            'Score': [1, 0, 0, 1, 1, 1, 1, 0, 1, 1],
+            'Cumulative Accuracy': ['100%', '50%', '33%', '50%', '60%', '67%', '71%', '63%', '67%', '70%'],
+            'Rolling (3-attempt)': ['100%', '50%', '33%', '33%', '67%', '100%', '100%', '67%', '67%', '67%'],
+            'Insight Difference': [
+                'Same',
+                'Same', 
+                'Same',
+                'Cumulative: steady growth',
+                'Rolling: rapid improvement',
+                'Rolling: mastery achieved',
+                'Cumulative: gradual progress',
+                'Rolling: immediate impact visible',
+                'Different volatility levels',
+                'Cumulative: stable, Rolling: current'
             ]
         }
         
-        math_df = pd.DataFrame(math_data)
-        st.table(math_df)
+        example_df = pd.DataFrame(example_data)
+        st.table(example_df)
         
         st.markdown("""
-        **Progression Pattern Interpretation:**
+        **Pattern Recognition - What Each Metric Reveals:**
         """)
         
-        # Create pattern interpretation table
+        # Create pattern analysis table
         pattern_data = {
-            'Curve Shape': ['📈 Upward Trend', '📊 Flat Line', '📉 Downward Trend', '🎢 Volatile'],
-            'What It Means': [
-                'User is actively learning',
-                'User has plateaued',
-                'User is struggling/fatigued',
-                'Inconsistent performance'
+            'Learning Pattern': ['Early Struggle → Mastery', 'Quick Start → Plateau', 'Consistent Progress', 'Recent Decline'],
+            'Cumulative Shows': [
+                'Gradual overall improvement',
+                'High early performance maintained',
+                'Steady upward trend',
+                'Slight recent dip in average'
             ],
-            'Business Action': [
+            'Rolling Shows': [
+                'Clear recent mastery',
+                'Current performance plateau',
+                'Consistent current performance',
+                'Sharp recent performance drop'
+            ],
+            'Coaching Action': [
+                'Celebrate breakthrough',
+                'Introduce advanced content',
                 'Continue current approach',
-                'Provide advanced content',
-                'Intervention needed',
-                'Review content difficulty'
-            ],
-            'Educational Insight': [
-                'Platform is effective for this user',
-                'Ready for next level',
-                'May need tutoring or support',
-                'Content may be inconsistent'
+                'Immediate intervention needed'
             ]
         }
         
@@ -122,13 +130,12 @@ def render_user_progression_analysis(data_loader):
         st.table(pattern_df)
         
         st.markdown("""
-        **Key Statistical Limitations & Controls:**
-        - **Minimum Attempts Filter:** Prevents unreliable single-attempt "progressions"
-        - **Time-Ordering Critical:** Without chronological order, we'd see random patterns
-        - **Early Response Impact:** First few attempts heavily influence the curve
-        - **Content Consistency:** Assumes similar difficulty across time periods
+        **Advanced Analytics - Trend Detection:**
+        - **Performance Surge:** Rolling > Cumulative by >10pp (recent improvement)
+        - **Performance Decline:** Rolling < Cumulative by >10pp (recent problems)
+        - **Consistency:** Rolling ≈ Cumulative (stable performance)
+        - **Volatility Index:** Standard deviation of rolling accuracy
         """)
-        
     
     # Load data
     responses_df = data_loader.load_responses()
@@ -136,9 +143,23 @@ def render_user_progression_analysis(data_loader):
     # Ensure data is sorted chronologically
     responses_df = responses_df.sort_values(['id_user_hash', 'exam_created_at'])
     
-    # Filter settings
-    min_attempts = st.slider("Minimum attempts per user", 5, 50, 15, 
-                            help="Users need multiple attempts to show meaningful progression")
+    # Enhanced filter settings
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        min_attempts = st.slider("Minimum attempts per user", 5, 50, 15, 
+                                help="Users need multiple attempts to show meaningful progression")
+    
+    with col2:
+        rolling_window = st.slider("Rolling window size", 3, 15, 7,
+                                 help="Number of recent attempts for rolling accuracy")
+    
+    with col3:
+        analysis_mode = st.radio(
+            "Analysis Mode",
+            ["Cumulative Accuracy", "Rolling Accuracy", "Both (Comparison)"],
+            help="Choose which metrics to display"
+        )
     
     # Find users with sufficient attempts
     user_attempt_counts = responses_df.groupby('id_user_hash').size()
@@ -151,125 +172,334 @@ def render_user_progression_analysis(data_loader):
     # Filter to users with multiple attempts
     filtered_df = responses_df[responses_df['id_user_hash'].isin(multi_attempt_users)]
     
-    st.info(f"Analyzing {len(multi_attempt_users)} users with {min_attempts}+ attempts each")
+    st.info(f"Analyzing {len(multi_attempt_users)} users with {min_attempts}+ attempts each (Rolling window: {rolling_window} attempts)")
     
-    # Calculate progression for each user
+    # Calculate progression for each user with both metrics
     progression_data = []
+    trend_analysis = []
     
     for user_id in multi_attempt_users[:20]:  # Limit to top 20 for visibility
         user_data = filtered_df[filtered_df['id_user_hash'] == user_id].copy()
         user_data = user_data.sort_values('exam_created_at')
         
-        # Calculate expanding mean (cumulative accuracy)
+        # Calculate both metrics
         user_data['cumulative_accuracy'] = user_data['is_correct'].expanding().mean()
+        user_data['rolling_accuracy'] = user_data['is_correct'].rolling(rolling_window, min_periods=1).mean()
         user_data['attempt_number'] = range(1, len(user_data) + 1)
         
-        progression_data.append(user_data[['id_user_hash', 'attempt_number', 'cumulative_accuracy']])
+        # Trend analysis for this user
+        final_cumulative = user_data['cumulative_accuracy'].iloc[-1]
+        final_rolling = user_data['rolling_accuracy'].iloc[-1]
+        performance_gap = final_rolling - final_cumulative
+        
+        # Volatility calculation
+        rolling_volatility = user_data['rolling_accuracy'].std() if len(user_data) > rolling_window else 0
+        
+        trend_analysis.append({
+            'user_id': user_id,
+            'final_cumulative': final_cumulative,
+            'final_rolling': final_rolling,
+            'performance_gap': performance_gap,
+            'rolling_volatility': rolling_volatility,
+            'total_attempts': len(user_data),
+            'trend_type': 'Recent Surge' if performance_gap > 0.1 else 
+                         'Recent Decline' if performance_gap < -0.1 else 'Stable'
+        })
+        
+        progression_data.append(user_data[['id_user_hash', 'attempt_number', 'cumulative_accuracy', 'rolling_accuracy']])
     
     # Combine all user data
     if progression_data:
         all_progression = pd.concat(progression_data, ignore_index=True)
         
-        # Create line plot
-        fig = px.line(
-            all_progression,
-            x='attempt_number',
-            y='cumulative_accuracy',
-            color='id_user_hash',
-            title=f'Learning Progression: Cumulative Accuracy Over Time (Top 20 Users)',
-            labels={
-                'attempt_number': 'Attempt Number',
-                'cumulative_accuracy': 'Cumulative Accuracy Rate',
-                'id_user_hash': 'User ID'
-            }
-        )
+        # Create visualization based on selected mode
+        if analysis_mode == "Both (Comparison)":
+            # Side-by-side comparison
+            fig = go.Figure()
+            
+            # Add cumulative accuracy lines
+            for user_id in multi_attempt_users[:20]:
+                user_subset = all_progression[all_progression['id_user_hash'] == user_id]
+                fig.add_trace(go.Scatter(
+                    x=user_subset['attempt_number'],
+                    y=user_subset['cumulative_accuracy'],
+                    mode='lines',
+                    name=f'User {user_id[:8]} (Cumulative)',
+                    line=dict(dash='dot'),
+                    legendgroup='cumulative',
+                    legendgrouptitle_text="Cumulative Accuracy"
+                ))
+                
+                fig.add_trace(go.Scatter(
+                    x=user_subset['attempt_number'],
+                    y=user_subset['rolling_accuracy'],
+                    mode='lines',
+                    name=f'User {user_id[:8]} (Rolling)',
+                    line=dict(dash='solid'),
+                    legendgroup='rolling',
+                    legendgrouptitle_text="Rolling Accuracy"
+                ))
+            
+            # Add trend lines
+            overall_cumulative = all_progression.groupby('attempt_number')['cumulative_accuracy'].mean().reset_index()
+            overall_rolling = all_progression.groupby('attempt_number')['rolling_accuracy'].mean().reset_index()
+            
+            fig.add_trace(go.Scatter(
+                x=overall_cumulative['attempt_number'],
+                y=overall_cumulative['cumulative_accuracy'],
+                mode='lines',
+                name='Average Cumulative Trend',
+                line=dict(color='red', width=4, dash='dash'),
+                legendgroup='trends'
+            ))
+            
+            fig.add_trace(go.Scatter(
+                x=overall_rolling['attempt_number'],
+                y=overall_rolling['rolling_accuracy'],
+                mode='lines',
+                name='Average Rolling Trend',
+                line=dict(color='blue', width=4, dash='solid'),
+                legendgroup='trends'
+            ))
+            
+            fig.update_layout(
+                title=f'Learning Progression: Cumulative vs Rolling Accuracy Comparison (Window: {rolling_window})',
+                xaxis_title='Attempt Number',
+                yaxis_title='Accuracy Rate',
+                height=600,
+                showlegend=True
+            )
+            
+        elif analysis_mode == "Cumulative Accuracy":
+            # Cumulative only
+            fig = px.line(
+                all_progression,
+                x='attempt_number',
+                y='cumulative_accuracy',
+                color='id_user_hash',
+                title=f'Learning Progression: Cumulative Accuracy Over Time (Top 20 Users)',
+                labels={
+                    'attempt_number': 'Attempt Number',
+                    'cumulative_accuracy': 'Cumulative Accuracy Rate',
+                    'id_user_hash': 'User ID'
+                }
+            )
+            
+            # Add overall trend line
+            overall_trend = all_progression.groupby('attempt_number')['cumulative_accuracy'].mean().reset_index()
+            
+            fig.add_scatter(
+                x=overall_trend['attempt_number'],
+                y=overall_trend['cumulative_accuracy'],
+                mode='lines',
+                name='Average Cumulative Trend',
+                line=dict(color='red', width=4, dash='dash')
+            )
+            
+        else:  # Rolling Accuracy
+            fig = px.line(
+                all_progression,
+                x='attempt_number',
+                y='rolling_accuracy',
+                color='id_user_hash',
+                title=f'Learning Progression: Rolling Accuracy Over Time (Window: {rolling_window} attempts)',
+                labels={
+                    'attempt_number': 'Attempt Number',
+                    'rolling_accuracy': 'Rolling Accuracy Rate',
+                    'id_user_hash': 'User ID'
+                }
+            )
+            
+            # Add overall trend line
+            overall_trend = all_progression.groupby('attempt_number')['rolling_accuracy'].mean().reset_index()
+            
+            fig.add_scatter(
+                x=overall_trend['attempt_number'],
+                y=overall_trend['rolling_accuracy'],
+                mode='lines',
+                name='Average Rolling Trend',
+                line=dict(color='blue', width=4, dash='dash')
+            )
         
-        # Add overall trend line
-        overall_trend = all_progression.groupby('attempt_number')['cumulative_accuracy'].mean().reset_index()
-        
-        fig.add_scatter(
-            x=overall_trend['attempt_number'],
-            y=overall_trend['cumulative_accuracy'],
-            mode='lines',
-            name='Average Trend',
-            line=dict(color='red', width=4, dash='dash')
-        )
-        
-        fig.update_layout(height=500, showlegend=False)
+        fig.update_layout(height=600, showlegend=False if analysis_mode != "Both (Comparison)" else True)
         fig.update_yaxes(tickformat='.0%', range=[0, 1])
         
         st.plotly_chart(fig, use_container_width=True)
         
-        # Visual interpretation guide
+        # Enhanced visual interpretation guide
         st.markdown("""
-        ### 👁️ **What You're Looking At in This Chart:**
-        - **📊 Chart Type:** Multi-line chart (spaghetti plot)
-        - **📈 X-Axis:** Attempt number (1st attempt, 2nd attempt, etc.)
-        - **📊 Y-Axis:** Cumulative accuracy rate (expanding average, 0% to 100%)
-        - **🎯 Each Line:** Represents one user's learning progression
-        - **📏 Line Direction:** Upward = Learning, Downward = Declining, Flat = No change
-        - **🌈 Line Colors:** Automatically assigned for visual distinction
-        
-        **How to Read It:**
-        - **Lines trending UP** = Users are learning and improving over time
-        - **Lines trending DOWN** = Users getting worse (concerning pattern)
-        - **Steep upward slopes** = Rapid learning/improvement
-        - **Gentle upward slopes** = Gradual, steady learning
-        - **Flat lines** = Performance plateau (no improvement)
-        - **Zigzag patterns** = Inconsistent performance
-        - **Higher ending points** = Better final performance
+        ### 👁️ **What You're Looking At in This Enhanced Chart:**
         """)
         
-        # Analysis insights
-        st.subheader("📊 Progression Analysis")
-        
-        # Calculate improvement metrics
-        improvement_stats = []
-        for user_id in multi_attempt_users:
-            user_data = filtered_df[filtered_df['id_user_hash'] == user_id].copy()
-            user_data = user_data.sort_values('exam_created_at')
+        if analysis_mode == "Both (Comparison)":
+            st.markdown("""
+            - **📊 Chart Type:** Dual-metric comparison (dotted = cumulative, solid = rolling)
+            - **📈 X-Axis:** Attempt number (1st attempt, 2nd attempt, etc.)
+            - **📊 Y-Axis:** Accuracy rate (0% to 100%)
+            - **🎯 Dotted Lines:** Cumulative accuracy (lifetime performance)
+            - **🎯 Solid Lines:** Rolling accuracy (recent performance window)
+            - **📏 Line Separation:** When lines diverge, recent performance differs from overall
+            - **🔴 Red Trend:** Average cumulative progression
+            - **🔵 Blue Trend:** Average rolling progression
             
-            first_half = user_data['is_correct'].iloc[:len(user_data)//2].mean()
-            second_half = user_data['is_correct'].iloc[len(user_data)//2:].mean()
-            improvement = second_half - first_half
+            **How to Read the Comparison:**
+            - **Solid line ABOVE dotted** = Recent performance better than lifetime average
+            - **Solid line BELOW dotted** = Recent performance worse than lifetime average
+            - **Lines close together** = Consistent performance over time
+            - **Lines far apart** = Recent change in performance pattern
+            """)
+        elif analysis_mode == "Cumulative Accuracy":
+            st.markdown("""
+            - **📊 Chart Type:** Multi-line chart (cumulative performance)
+            - **📈 X-Axis:** Attempt number (chronological progression)
+            - **📊 Y-Axis:** Cumulative accuracy rate (lifetime average)
+            - **🎯 Each Line:** One user's overall learning trajectory
+            - **📏 Line Direction:** Shows long-term learning effectiveness
+            - **🔴 Red Trend:** Platform-wide average progression
             
-            improvement_stats.append({
-                'user_id': user_id,
-                'first_half_accuracy': first_half,
-                'second_half_accuracy': second_half,
-                'improvement': improvement,
-                'total_attempts': len(user_data)
-            })
+            **How to Read Cumulative Accuracy:**
+            - **Steady upward trend** = Consistent long-term learning
+            - **Early plateau** = Quick mastery, then maintenance
+            - **Late surge** = Breakthrough after initial struggle
+            - **Declining trend** = Systematic performance deterioration
+            """)
+        else:  # Rolling Accuracy
+            st.markdown("""
+            - **📊 Chart Type:** Multi-line chart (recent performance)
+            - **📈 X-Axis:** Attempt number (chronological progression)
+            - **📊 Y-Axis:** Rolling accuracy rate (recent window average)
+            - **🎯 Each Line:** One user's current performance level
+            - **📏 Line Volatility:** Shows performance consistency
+            - **🔵 Blue Trend:** Platform-wide recent performance
+            
+            **How to Read Rolling Accuracy:**
+            - **High volatility** = Inconsistent recent performance
+            - **Sudden jumps** = Recent breakthroughs or improvements
+            - **Sudden drops** = Recent difficulties or fatigue
+            - **Stable lines** = Consistent current performance level
+            """)
         
-        improvement_df = pd.DataFrame(improvement_stats)
+        # Advanced trend analysis
+        st.subheader("🎯 Advanced Trend Analysis")
         
-        # Show summary statistics
-        improving_users = (improvement_df['improvement'] > 0.05).sum()  # 5% improvement threshold
-        total_users = len(improvement_df)
+        trend_df = pd.DataFrame(trend_analysis)
         
-        col1, col2, col3 = st.columns(3)
+        # Summary metrics
+        col1, col2, col3, col4 = st.columns(4)
         
         with col1:
+            surge_users = (trend_df['trend_type'] == 'Recent Surge').sum()
             st.metric(
-                "Users Showing Improvement",
-                f"{improving_users}/{total_users}",
-                f"{improving_users/total_users:.1%}"
+                "Recent Surge Users",
+                surge_users,
+                f"{surge_users/len(trend_df):.1%}",
+                help="Users performing >10pp better recently than overall"
             )
         
         with col2:
-            avg_improvement = improvement_df['improvement'].mean()
+            decline_users = (trend_df['trend_type'] == 'Recent Decline').sum()
             st.metric(
-                "Average Improvement",
-                f"{avg_improvement:+.1%}",
-                help="Difference between second half and first half accuracy"
+                "Recent Decline Users", 
+                decline_users,
+                f"{decline_users/len(trend_df):.1%}",
+                help="Users performing >10pp worse recently than overall"
             )
         
         with col3:
-            best_improvement = improvement_df['improvement'].max()
+            avg_volatility = trend_df['rolling_volatility'].mean()
             st.metric(
-                "Best User Improvement",
-                f"{best_improvement:+.1%}"
+                "Average Volatility",
+                f"{avg_volatility:.3f}",
+                help="Standard deviation of rolling accuracy (lower = more consistent)"
             )
+        
+        with col4:
+            avg_performance_gap = trend_df['performance_gap'].mean()
+            st.metric(
+                "Avg Performance Gap",
+                f"{avg_performance_gap:+.1%}",
+                help="Average difference: rolling - cumulative accuracy"
+            )
+        
+        # Detailed trend breakdown
+        if analysis_mode == "Both (Comparison)":
+            st.subheader("📋 Detailed User Trend Analysis")
+            
+            # Create detailed analysis table
+            display_df = trend_df.copy()
+            display_df['user_id'] = display_df['user_id'].str[:12] + '...'
+            display_df['final_cumulative'] = (display_df['final_cumulative'] * 100).round(1).astype(str) + '%'
+            display_df['final_rolling'] = (display_df['final_rolling'] * 100).round(1).astype(str) + '%'
+            display_df['performance_gap'] = (display_df['performance_gap'] * 100).round(1).astype(str) + 'pp'
+            display_df['rolling_volatility'] = display_df['rolling_volatility'].round(3)
+            
+            st.dataframe(
+                display_df[['user_id', 'final_cumulative', 'final_rolling', 'performance_gap', 'trend_type', 'rolling_volatility', 'total_attempts']],
+                column_config={
+                    'user_id': 'User ID',
+                    'final_cumulative': 'Cumulative Accuracy',
+                    'final_rolling': 'Rolling Accuracy', 
+                    'performance_gap': 'Performance Gap',
+                    'trend_type': 'Trend Classification',
+                    'rolling_volatility': 'Volatility Index',
+                    'total_attempts': 'Total Attempts'
+                },
+                use_container_width=True
+            )
+        
+        # Business insights and recommendations
+        st.subheader("💼 Business Insights & Recommendations")
+        
+        insight_col1, insight_col2 = st.columns(2)
+        
+        with insight_col1:
+            st.markdown("""
+            **📈 Trend-Based Actions:**
+            """)
+            
+            if surge_users > 0:
+                st.success(f"""
+                **{surge_users} users showing recent breakthroughs!**
+                - Celebrate their progress with recognition
+                - Offer advanced content or challenges
+                - Use as success stories for other users
+                """)
+            
+            if decline_users > 0:
+                st.warning(f"""
+                **{decline_users} users showing recent decline**
+                - Immediate check-in recommended
+                - Review recent content difficulty
+                - Consider tutoring or additional support
+                """)
+        
+        with insight_col2:
+            st.markdown("""
+            **🎯 Methodology Recommendations:**
+            """)
+            
+            if analysis_mode == "Both (Comparison)":
+                st.info("""
+                **Optimal dual-metric approach:**
+                - Use cumulative for progress reports
+                - Use rolling for coaching decisions
+                - Monitor gaps for intervention timing
+                - Track volatility for consistency
+                """)
+            elif analysis_mode == "Cumulative Accuracy":
+                st.info("""
+                **Cumulative accuracy insights:**
+                - Best for long-term assessment
+                - Shows overall learning effectiveness
+                - Consider adding rolling window for complete picture
+                """)
+            else:
+                st.info("""
+                **Rolling accuracy insights:**
+                - Best for immediate interventions
+                - Shows current performance state
+                - Consider adding cumulative for context
+                """)
 
 
 def render_user_segments(data_loader):
